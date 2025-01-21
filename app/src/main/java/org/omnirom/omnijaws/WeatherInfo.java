@@ -76,16 +76,18 @@ public class WeatherInfo {
         public final float low, high;
         public final int conditionCode;
         public final String condition;
+        public final String conditionSummary;
         public boolean metric;
         public String date;
 
-        public DayForecast(float low, float high, String condition, int conditionCode, String date, boolean metric) {
+        public DayForecast(float low, float high, String condition, int conditionCode, String date, boolean metric, String conditionSummary) {
             this.low = low;
             this.high = high;
             this.condition = condition;
             this.conditionCode = conditionCode;
             this.metric = metric;
             this.date = date;
+            this.conditionSummary = conditionSummary;
         }
 
         public float getLow() {
@@ -98,6 +100,10 @@ public class WeatherInfo {
 
         public String getCondition(Context context) {
             return WeatherInfo.getCondition(context, conditionCode, condition);
+        }
+
+        public String getConditionSummary() {
+            return conditionSummary;
         }
 
         public int getConditionCode() {
@@ -247,6 +253,7 @@ public class WeatherInfo {
             builder.append(", low ").append(getFormattedValue(d.getLow(), getTemperatureUnit()));
             builder.append(", ").append(d.condition);
             builder.append("(").append(d.conditionCode).append(")");
+            builder.append(", ").append(d.getConditionSummary());
         }
         return builder.toString();
     }
@@ -276,7 +283,8 @@ public class WeatherInfo {
             builder.append(d.low).append(';');
             builder.append(d.condition).append(';');
             builder.append(d.conditionCode).append(';');
-            builder.append(d.date);
+            builder.append(d.date).append(';');
+            builder.append(d.conditionSummary);
         }
     }
 
@@ -314,21 +322,22 @@ public class WeatherInfo {
             return null;
         }
 
-        if (forecastItems == 0 || forecastParts.length != 5 * forecastItems + 1) {
+        if (forecastItems == 0 || forecastParts.length != 6 * forecastItems + 1) {
             return null;
         }
 
         // Parse the forecast data
         try {
             for (int item = 0; item < forecastItems; item++) {
-                int offset = item * 5 + 1;
+                int offset = item * 6 + 1;
                 DayForecast day = new DayForecast(
                         /* low */ Float.parseFloat(forecastParts[offset + 1]),
                         /* high */ Float.parseFloat(forecastParts[offset]),
                         /* condition */ forecastParts[offset + 2],
                         /* conditionCode */ Integer.parseInt(forecastParts[offset + 3]),
                         forecastParts[offset + 4],
-                        metric);
+                        metric,
+                        /* conditionSummary */ forecastParts[offset + 5]);
                 if (!Float.isNaN(day.low) && !Float.isNaN(day.high) /*&& day.conditionCode >= 0*/) {
                     forecasts.add(day);
                 }

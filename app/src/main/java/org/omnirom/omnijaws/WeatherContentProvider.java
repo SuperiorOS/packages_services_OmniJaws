@@ -54,6 +54,7 @@ public class WeatherContentProvider extends ContentProvider {
     private static final String COLUMN_FORECAST_CONDITION = "forecast_condition";
     private static final String COLUMN_FORECAST_CONDITION_CODE = "forecast_condition_code";
     private static final String COLUMN_FORECAST_DATE = "forecast_date";
+    private static final String COLUMN_FORECAST_SUMMARY = "forecast_summary";
 
     private static final String COLUMN_ENABLED = "enabled";
     private static final String COLUMN_PROVIDER = "provider";
@@ -80,7 +81,8 @@ public class WeatherContentProvider extends ContentProvider {
             COLUMN_FORECAST_HIGH,
             COLUMN_FORECAST_CONDITION,
             COLUMN_FORECAST_CONDITION_CODE,
-            COLUMN_FORECAST_DATE
+            COLUMN_FORECAST_DATE,
+            COLUMN_FORECAST_SUMMARY
     };
 
     private static final String[] PROJECTION_DEFAULT_SETTINGS = new String[] {
@@ -159,7 +161,8 @@ public class WeatherContentProvider extends ContentProvider {
                             .add(COLUMN_FORECAST_LOW, day.getLow())
                             .add(COLUMN_FORECAST_HIGH, day.getHigh())
                             .add(COLUMN_FORECAST_CONDITION_CODE, day.getConditionCode())
-                            .add(COLUMN_FORECAST_DATE, day.date);
+                            .add(COLUMN_FORECAST_DATE, day.date)
+                            .add(COLUMN_FORECAST_SUMMARY, day.getConditionSummary());
                 }
                 return result;
             }
