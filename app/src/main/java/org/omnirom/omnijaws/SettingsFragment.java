@@ -339,6 +339,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements OnPref
         // stop any pending
         WeatherUpdateService.cancelAllUpdate(getContext());
         WeatherAppWidgetProvider.disableAllWidgets(getContext());
+        WeatherUpdateService.disabledCall(getContext());
     }
 
     private void enableService() {
