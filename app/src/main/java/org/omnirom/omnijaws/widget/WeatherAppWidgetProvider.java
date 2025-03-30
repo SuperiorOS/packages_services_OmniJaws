@@ -313,8 +313,10 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
         int smallWidgetResId = R.layout.weather_appwidget_small_system;
         int largelWidgetResId = R.layout.weather_appwidget_large_system;
         int wideWidgetResId = R.layout.weather_appwidget_wide_system;
+        
+        String iconPack = Config.getIconPack(context);
 
-        boolean isPackOutline = Config.getIconPack(context).equals("org.omnirom.omnijaws.outline");
+        boolean isPackOutline = iconPack != null && !iconPack.isEmpty() && iconPack.equals("org.omnirom.omnijaws.outline");
 
         switch (theme) {
             case COLOR_THEME_SYSTEM:
