@@ -77,7 +77,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements OnPref
     private Handler mHandler = new Handler();
     protected boolean mShowIconPack = true;
     private EditTextPreference mOwmKey;
-    private OmniJawsClient mWeatherClient;
     private Preference mCustomLocationActivity;
     private static final String PREF_KEY_CUSTOM_LOCATION = "weather_custom_location";
     private static final String WEATHER_ICON_PACK = "weather_icon_pack";
@@ -116,7 +115,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements OnPref
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        mWeatherClient = new OmniJawsClient(getContext());
 
         doLoadPreferences();
     }
@@ -192,7 +190,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements OnPref
     @Override
     public void onResume() {
         super.onResume();
-        mWeatherClient.addObserver(this);
+        OmniJawsClient.get().addObserver(getContext(), this);
         // values can be changed from outside
         getPreferenceScreen().removeAll();
         doLoadPreferences();
@@ -206,7 +204,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements OnPref
     @Override
     public void onPause() {
         super.onPause();
-        mWeatherClient.removeObserver(this);
+        OmniJawsClient.get().removeObserver(getContext(), this);
     }
 
     @Override
@@ -411,13 +409,13 @@ public class SettingsFragment extends PreferenceFragmentCompat implements OnPref
     }
 
     private void queryAndUpdateWeather() {
-        mWeatherClient.queryWeather();
-        if (mWeatherClient.getWeatherInfo() != null) {
+        OmniJawsClient.get().queryWeather(getContext());
+        if (OmniJawsClient.get().getWeatherInfo() != null) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     if (mUpdateStatus != null) {
-                        mUpdateStatus.setSummary(mWeatherClient.getWeatherInfo().getLastUpdateTime());
+                        mUpdateStatus.setSummary(OmniJawsClient.get().getWeatherInfo().getLastUpdateTime());
                     }
                 }
             });
