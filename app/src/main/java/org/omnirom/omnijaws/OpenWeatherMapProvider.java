@@ -89,7 +89,7 @@ public class OpenWeatherMapProvider extends AbstractWeatherProvider {
             String city = getWeatherDataLocality(selection);
 
             WeatherInfo w = new WeatherInfo(mContext, selection, city,
-                    /* condition */ weather.getString("description"),
+                    /* condition */ weather.getString("main"),
                     /* conditionCode */ mapConditionIconToCode(
                     weather.getString("icon"), weather.getInt("id")),
                     /* temperature */ sanitizeTemperature(conditionData.getDouble("temp"), metric),
@@ -124,16 +124,14 @@ public class OpenWeatherMapProvider extends AbstractWeatherProvider {
                 JSONObject forecast = forecasts.getJSONObject(i);
                 JSONObject conditionData = forecast.getJSONObject("temp");
                 JSONObject data = forecast.getJSONArray("weather").getJSONObject(0);
-                String conditionSummary = forecast.getString("summary");
                 item = new DayForecast(
                         /* low */ sanitizeTemperature(conditionData.getDouble("min"), metric),
                         /* high */ sanitizeTemperature(conditionData.getDouble("max"), metric),
-                        /* condition */ data.getString("description"),
+                        /* condition */ data.getString("main"),
                         /* conditionCode */ mapConditionIconToCode(
                         data.getString("icon"), data.getInt("id")),
                         day,
-                        metric,
-                        conditionSummary);
+                        metric);
             } catch (JSONException e) {
                 Log.w(TAG, "Invalid forecast for day " + i + " creating dummy", e);
                 item = new DayForecast(
@@ -142,8 +140,7 @@ public class OpenWeatherMapProvider extends AbstractWeatherProvider {
                         /* condition */ "",
                         /* conditionCode */ -1,
                         "NaN",
-                        metric,
-                        /* conditionSummary */ "");
+                        metric);
             }
             result.add(item);
         }
@@ -157,8 +154,7 @@ public class OpenWeatherMapProvider extends AbstractWeatherProvider {
                         /* condition */ "",
                         /* conditionCode */ -1,
                         "NaN",
-                        metric,
-                        "");
+                        metric);
                 result.add(item);
             }
         }
